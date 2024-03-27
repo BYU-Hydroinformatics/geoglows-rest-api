@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "latest"
 description: "Global Streamflow Prediction REST API"
 name: gsprestapi
-version: 0.1.15
+version: 0.1.18

@@ -23,39 +23,6 @@ client = boto3.client(
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-product_map_v1 = {
-    'ForecastStats': '100',
-    'ForecastEnsembles': '110',
-    'ForecastWarnings': '120',
-    'ForecastRecords': '130',
-    'HistoricSimulation': '200',
-    'ReturnPeriods': '210',
-    'DailyAverages': '220',
-    'MonthlyAverages': '230',
-    'AvailableData': '300',
-    'AvailableRegions': '310',
-    'AvailableDates': '320',
-    'GetReachID': '400'
-}
-
-product_map_v2 = {
-    'forecaststats': '100',
-    'forecastensembles': '110',
-    'forecastwarnings': '120',
-    'forecastrecords': '130',
-    'forecast': '140',
-    'forecastanomalies': '150',
-    'hindcast': '200',
-    'returnperiods': '210',
-    'dailyaverages': '220',
-    'monthlyaverages': '230',
-    'historical': '240',
-    'availabledata': '300',
-    'availableregions': '310',
-    'availabledates': '320',
-    'getreachid': '400'
-}
-
 
 def log_request(version: str, product: str, reach_id: int, return_format: str, source: str):
     """

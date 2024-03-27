@@ -18,7 +18,7 @@ import sys
 import yaml
 
 TEMPLATE = """{% extends "base_template.html" %}
-{% block title %}GEOGloWS ECMWF Streamflow Service{% endblock %}
+{% block title %}GEOGLOWS ECMWF Streamflow Service{% endblock %}
 
 {% block body %}
   <div id="swagger-ui"></div>
@@ -59,7 +59,6 @@ TEMPLATE = """{% extends "base_template.html" %}
     html
     {
       box-sizing: border-box;
-      overflow: -moz-scrollbars-vertical;
       overflow-y: scroll;
     }
     *,
@@ -79,5 +78,5 @@ TEMPLATE = """{% extends "base_template.html" %}
 spec = yaml.safe_load(sys.stdin)
 sys.stdout.write(TEMPLATE.replace("SWAGGER_YAML_CONTENT", json.dumps(spec)))
 with open('index.html', 'r') as idx:
-    with open(os.path.join(os.path.pardir, 'GSP_API', 'templates', 'documentation.html'), 'w') as doc:
+    with open(os.path.join(os.path.pardir, 'app', 'templates', 'documentation.html'), 'w') as doc:
         doc.write(idx.read())

@@ -1,1 +1,0 @@
-A REST API that provides access to ten-day streamflow forecasts at a high resolution for Africa, the Americas, and South Asia. Other products that can be accessed through the REST API include: a 35-year historic simulation, seasonal averages, and return periods for each individual available stream.

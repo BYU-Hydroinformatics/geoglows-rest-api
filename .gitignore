@@ -182,5 +182,9 @@ dmypy.json
 # pytype static role analyzer
 .pytype/
 
+# vscode
+.vscode/
+
 ## Misc
 sample_data/**
+/aws_config.json

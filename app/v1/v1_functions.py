@@ -6,8 +6,8 @@ import netCDF4 as nc
 import pandas as pd
 from pytz import utc
 
-from constants import PATH_TO_ERA_INTERIM, PATH_TO_ERA_5, M3_TO_FT3
-from model_utilities import latlon_to_reach, reach_to_region
+from .constants import PATH_TO_ERA_INTERIM, PATH_TO_ERA_5, M3_TO_FT3
+from .model_utilities import latlon_to_reach, reach_to_region
 
 
 def handle_parameters(request):

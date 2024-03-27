@@ -2,80 +2,43 @@ stages:
   - Build
   - Deploy
 
+include:
+  - project: "tethys/kubernetes/gl-k8s-integration"
+    ref: 1.6.1
+    file: "/helm-check.yml"
+  - project: "tethys/kubernetes/gl-k8s-integration"
+    ref: 1.6.1
+    file: "/kaniko-build.yml"
+
 ### Build ###
 "Check Helm":
   stage: Build
-  image: docker.aquaveo.com/tethys/kubernetes/helm-docker:0.7.1
   variables:
-    GIT_SUBMODULE_STRATEGY: none
+    HELM_REPO_URL: https://eccr.ecmwf.int
+    HELM_REPO_CHANNEL: geoglows_api
+    HELM_REPO_USERNAME: $ECCR_USER
+    HELM_REPO_PASSWORD: $ECCR_PASSWORD
     HELM_CHART: $CI_PROJECT_DIR/helm/gsprestapi
   script:
     # Ensure all required variables are set
     - ": \"${HELM_CHART:?must be set}\""
-    - helm lint $HELM_CHART
     - chmod +x ./check_helm_chart
     - ./check_helm_chart $HELM_CHART
-  except:
-   - tags
-   - master
 
 "Update Helm":
   stage: Build
-  image: docker.aquaveo.com/tethys/kubernetes/helm-docker:0.7.1
   variables:
-    GIT_SUBMODULE_STRATEGY: none
-    HELM_REPO_USERNAME: aquaveo
+    HELM_REPO_URL: https://eccr.ecmwf.int
+    HELM_REPO_CHANNEL: geoglows_api
+    HELM_REPO_USERNAME: $ECCR_USER
+    HELM_REPO_PASSWORD: $ECCR_PASSWORD
     HELM_CHART: $CI_PROJECT_DIR/helm/gsprestapi
   script:
     # Ensure all required variables are set
     - ": \"${HELM_CHART:?must be set}\""
-    - ": \"${HELM_KEY_PASSPHRASE:?must be set}\""
-    - ": \"${HELM_REPO_PASSWORD:?must be set}\""
     - helm lint $HELM_CHART
     - chmod +x ./check_helm_chart
     - ./check_helm_chart $HELM_CHART --upload
-  only:
-    - master
-
-.kaniko_build:
-  stage: Build
-  image:
-    name: gcr.io/kaniko-project/executor:debug-v0.23.0
-    entrypoint: [""]
-  variables:
-    GIT_SUBMODULE_STRATEGY: recursive
-  before_script:
-    - >
-      echo "{\"auths\":{
-        \"$CI_REGISTRY\": {\"username\":\"$CI_REGISTRY_USER\", \"password\":\"$CI_REGISTRY_PASSWORD\"},
-        \"eccr.ecmwf.int/harbor\": {\"username\":\"$ECCR_USER\", \"password\":\"$ECCR_PASSWORD\"}
-      }}" > /kaniko/.docker/config.json
-  script:
-    # Ensure all required variables are set
-    - ": \"${KANIKO_DOCKERFILE:?must be set}\""
-    - ": \"${KANIKO_CONTEXT:?must be set}\""
-    - ": \"${KANIKO_DESTINATIONS:?must be set}\""
-    # Run Kaniko
-    - export KANIKO_CMD="/kaniko/executor
-        --context $KANIKO_CONTEXT
-        --dockerfile $KANIKO_DOCKERFILE
-        $(for DEST in $KANIKO_DESTINATIONS; do echo "--destination $DEST "; done)
-        --cache=true
-        --cache-repo $CI_REGISTRY_IMAGE/cache
-        --force"
-    - echo $KANIKO_CMD
-    - $KANIKO_CMD
-
-"Build Commit":
-  extends: .kaniko_build
-  variables:
-    GIT_SUBMODULE_STRATEGY: recursive
-    KANIKO_CONTEXT: $CI_PROJECT_DIR
-    KANIKO_DOCKERFILE: $CI_PROJECT_DIR/Dockerfile
-    KANIKO_DESTINATIONS: $CI_REGISTRY_IMAGE/dev:$CI_COMMIT_SHORT_SHA
-
-  except:
-    - tags
 
 "Build Tag":
   extends: .kaniko_build
@@ -86,6 +49,12 @@ stages:
     KANIKO_DESTINATIONS: >
       eccr.ecmwf.int/geoglows_api/geoglows_api:$CI_COMMIT_TAG
       eccr.ecmwf.int/geoglows_api/geoglows_api:latest
+  before_script:
+    - >
+      echo "{\"auths\":{
+        \"$CI_REGISTRY\": {\"username\":\"$CI_REGISTRY_USER\", \"password\":\"$CI_REGISTRY_PASSWORD\"},
+        \"eccr.ecmwf.int/harbor\": {\"username\":\"$ECCR_USER\", \"password\":\"$ECCR_PASSWORD\"}
+      }}" > /kaniko/.docker/config.json
   only:
     - tags
 
@@ -95,13 +64,19 @@ stages:
     KANIKO_CONTEXT: $CI_PROJECT_DIR
     KANIKO_DOCKERFILE: $CI_PROJECT_DIR/Dockerfile
     KANIKO_DESTINATIONS: eccr.ecmwf.int/geoglows_api/geoglows_api:stable
+  before_script:
+    - >
+      echo "{\"auths\":{
+        \"$CI_REGISTRY\": {\"username\":\"$CI_REGISTRY_USER\", \"password\":\"$CI_REGISTRY_PASSWORD\"},
+        \"eccr.ecmwf.int/harbor\": {\"username\":\"$ECCR_USER\", \"password\":\"$ECCR_PASSWORD\"}
+      }}" > /kaniko/.docker/config.json
   only:
     - /^stable$/
 
 ### DEPLOY ###
 "Deploy to Staging":
   stage: Deploy
-  image: docker.aquaveo.com/tethys/kubernetes/helm-docker:2.0.0-rc1
+  image: aquaveollc/helm-docker:0.3.1
   dependencies: [] # Deploys do not depend on the Build phase artifacts
   variables:
     GIT_SUBMODULE_STRATEGY: none
@@ -115,7 +90,7 @@ stages:
 
 "Deploy to Production":
   stage: Deploy
-  image: docker.aquaveo.com/tethys/kubernetes/helm-docker:2.0.0-rc1
+  image: aquaveollc/helm-docker:0.3.1
   dependencies: [] # Deploys do not depend on the Build phase artifacts
   variables:
     GIT_SUBMODULE_STRATEGY: none
@@ -126,5 +101,3 @@ stages:
   when: manual
   only:
     - tags
-
-

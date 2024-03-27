@@ -1,29 +1,29 @@
 swagger: '2.0'
 info:
-  title: GEOGloWS ECMWF Streamflow Data Service
+  title: GEOGLOWS ECMWF Streamflow Data Service
   description: 'A REST Data Service to access high resolution streamflow forecasts from around the world'
   version: '2.0.0'
 host: geoglows.ecmwf.int
-basePath: /api
+basePath: /api/v2
 schemes:
   - https
   - http
 paths:
-  /Hydroviewer/{reach_id}/{return_format}:
+  /hydroviewer/{reach_id}:
     get:
       description: A shorthand for retrieving the forecast records and stats, and return periods, usually all plotted together.
       summary: Returns forecast records, forecast stats, and return periods.
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -48,21 +48,21 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /Forecast/{reach_id}/{return_format}:
+  /forecast/{reach_id}:
     get:
       description: This operation returns the average of the ensemble forecast.
       summary: Returns average forecasted flow
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -87,21 +87,21 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /ForecastStats/{reach_id}/{return_format}:
+  /forecaststats/{reach_id}:
     get:
       description: This operation returns statistics calculated from 51 forecast ensemble members. A successful response will return a time series with date-value pairs.
       summary: Return basic forecast statistics
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -126,14 +126,14 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /ForecastEnsembles/{reach_id}/{return_format}:
+  /forecastensembles/{reach_id}:
     get:
       description: This operation returns a timeseries for each of the 51 normal forecast ensemble members and the 52nd higher resolution forecast. A successful response will return a time series with date-value pairs.
       summary: Return forecast ensembles
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
@@ -152,10 +152,10 @@ paths:
               - A combination of individual numbers and ranges (i.e. 1,5,7-16,24-35)
           type: string
           default: all
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -175,7 +175,7 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /ForecastRecords/{reach_id}/{return_format}:
+  /forecastrecords/{reach_id}:
     get:
       description: |-
         This retrieves the rolling record of the mean of the forecasted streamflow during the first 24 hours of each day's forecast. That is, each day day after the
@@ -184,7 +184,7 @@ paths:
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
@@ -212,14 +212,14 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /ForecastAnomalies/{reach_id}/{return_format}:
+  /forecastanomalies/{reach_id}:
     get:
       description: Computes the deviations from the daily averages
       summary: Calculates the differences between the daily average and the forecasted flow for each day
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
@@ -247,7 +247,7 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /ForecastWarnings/{return_format}:
+  /forecastwarnings/{return_format}:
     get:
       description: |-
         This method returns a csv created to summarize the potential return period level flow events coming to the reaches in a specified region. The CSV contains a column for the reach_id, lat of the reach, lon of the reach, maximum forecasted flow in the next 15 day forecast, and a column for each of the return periods (2, 10, 20, 25, 50, 100) which will contain the date when the forecast is first expected to pass that threshold.
@@ -264,10 +264,10 @@ paths:
           description: If multiple forecast dates are available, provide the date in the format YYYYMMDD.HH of the forecast you would like to query. Use the AvailableDates method if you need to find out which dates are available. Defaults to the most recent available data.
           type: string
           format: string
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -287,7 +287,7 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region or both lat and lon are required as input
-  /ForecastDates:
+  /dates:
     get:
       description: This operation returns the available forecast dates in JSON format.
       summary: Available dates
@@ -308,7 +308,7 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /Hindcast/{reach_id}/{return_format}:
+  /retrospective/{reach_id}:
     get:
       description: |-
         This operation returns simulated streamflow data based on the ERA-5 dataset. A successful response will return a time series with date-value pairs.
@@ -316,14 +316,14 @@ paths:
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -343,21 +343,21 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /DailyAverages/{reach_id}/{return_format}:
+  /dailyaverages/{reach_id}:
     get:
       description: This operation returns the average flow for each day of the year for the Historic Simulation
       summary: Return historic simulation's daily averages
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -377,21 +377,21 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /MonthlyAverages/{reach_id}/{return_format}:
+  /monthlyaverages/{reach_id}:
     get:
       description: This operation returns the average flow for each month of the year for the Historic Simulation
       summary: Return historic simulation's monthly averages
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -411,22 +411,22 @@ paths:
           description: Missing a required parameter.
           examples:
             error: region is required as input.
-  /ReturnPeriods/{reach_id}/{return_format}:
+  /returnperiods/{reach_id}:
     get:
       description: |-
-        This operation returns the 2, 5, 10, 25, 50, and 100 year return period based on the 40-years simulated streamflow data and using the Gumbel Method. A successful response will return key-value pairs for earch return period along with metadata.
+        This operation returns the 2, 5, 10, 25, 50, and 100 year return period based on the 80-years simulated streamflow data and using the Gumbel Method. A successful response will return key-value pairs for earch return period along with metadata.
       summary: Return historic simulation
       parameters:
         - name: reach_id
           in: path
-          description: The stream reach's unique ID also refered to as common identifier (COMID). If the ID is not known, use the getReachID method.
+          description: The stream reach's unique ID also referred to as common identifier (COMID). If the ID is not known, use the getReachID method.
           type: number
           format: integer
           required: True
-        - name: return_format
-          in: path
-          required: True
-          description: The format of the response
+        - name: format
+          in: query
+          required: False
+          description: The file format of the response
           type: string
           default: csv
           enum:
@@ -468,290 +468,6 @@ paths:
       responses:
         '200':
           description:
-        '400':
-          description: Bad request. Check request and paramaters.
-          examples:
-            error: An unexpected error occured.
-        '422':
-          description: Missing a required parameter.
-          examples:
-            error: region is required as input.
-  /ForecastStats:
-    get:
-      description: This operation returns statistics calculated from 51 forecast ensemble members. A successful response will return a time series with date-value pairs.
-      summary: Return basic forecast statistics (if unable to provide reach_id, lat and lon can be provided as query arguments)
-      parameters:
-        - name: lat
-          in: query
-          description: A given latitude used to find the closest stream reach. Must be used together with `lon`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: lon
-          in: query
-          description: A given longitude used to find the closest stream reach. Must be used together with `lat`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: date
-          in: query
-          description: The given date for the forecast of interest given as YYYYMMDD (e.g. 20201020). If left blank it defaults to the most recent date. This API provides access to data within the last 30 days.
-          type: string
-          pattern: '^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])(.(00|12)|)$'
-        - name: return_format
-          in: query
-          description: The format of the time series response.
-          type: string
-          default: csv
-          enum:
-            - csv
-            - json
-      produces:
-        - text/csv
-        - application/json
-      responses:
-        '200':
-          description: The response body will contain a time series along with metadata about the stream reach of interest.
-        '400':
-          description: Bad request. Check request and paramaters.
-          examples:
-            error: An unexpected error occured.
-        '422':
-          description: Missing a required parameter.
-          examples:
-            error: region is required as input.
-  /ForecastEnsembles:
-    get:
-      description: This operation returns a timeseries for each of the 51 normal forecast ensemble members and the 52nd higher resolution forecast. A successful response will return a time series with date-value pairs.
-      summary: Return forecast ensembles
-      parameters:
-        - name: lat
-          in: query
-          description: A given latitude used to find the closest stream reach. Must be used together with `lon`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: lon
-          in: query
-          description: A given longitude used to find the closest stream reach. Must be used together with `lat`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: date
-          in: query
-          description: The given date for the forecast of interest given as YYYYMMDD (e.g. 20201020). If left blank it defaults to the most recent date. This API provides access to data within the last 30 days.
-          type: string
-          pattern: '^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])(.(00|12)|)$'
-        - name: ensemble
-          in: query
-          description: |-
-            The desired forecast ensemble(s). Input can be:
-              - An individual ensemble (i.e. 5)
-              - A group of ensembles separated by commas (i.e. 1,5,9)
-              - A range of ensembles separated by a dash (i.e. 3-15)
-              - A combination of individual numbers and ranges (i.e. 1,5,7-16,24-35)
-          type: string
-          default: all
-        - name: return_format
-          in: query
-          description: The format of the time series response.
-          type: string
-          default: csv
-          enum:
-            - csv
-            - json
-      produces:
-        - text/csv
-        - application/json
-      responses:
-        '200':
-          description: The response body will contain a time series for each ensemble along with metadata about the stream reach of interest.
-        '400':
-          description: Bad request. Check request and paramaters.
-          examples:
-            error: An unexpected error occured.
-        '422':
-          description: Missing a required parameter.
-          examples:
-            error: region is required as input.
-  /ForecastRecords:
-    get:
-      description: |-
-        This retrieves the rolling record of the mean of the forecasted streamflow during the first 24 hours of each day's forecast. That is, each day day after the
-        streamflow forecasts are computed, the average of first 8 of the 3-hour timesteps are recorded to a csv. This retrieves that rolling record
-      summary: Return rolling record of average flows
-      parameters:
-        - name: lat
-          in: query
-          description: A given latitude used to find the closest stream reach. Must be used together with `lon`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: lon
-          in: query
-          description: A given longitude used to find the closest stream reach. Must be used together with `lat`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: start_date
-          in: query
-          description: A date in YYYYMMDD format when you would like to start retrieving data (if available). Defaults to Jan 1 of the current year.
-          type: string
-          pattern: '^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$'
-        - name: end_date
-          in: query
-          description: A date in YYYYMMDD format when you would like to stop retrieving data (if available). Defaults to Dec 31 of the current year.
-          type: string
-          pattern: '^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$'
-      produces:
-        - text/csv
-      responses:
-        '200':
-          description: The response body will contain a time series for the specified stream reach
-        '400':
-          description: Bad request. Check request and paramaters.
-          examples:
-            error: An unexpected error occured.
-        '422':
-          description: Missing a required parameter.
-          examples:
-            error: region is required as input.
-  /Hindcast:
-    get:
-      description: |-
-        This operation returns simulated streamflow data based on the ERA-5 dataset. A successful response will return a time series with date-value pairs.
-      summary: Return historic simulation
-      parameters:
-        - name: lat
-          in: query
-          description: A given latitude used to find the closest stream reach. Must be used together with `lon`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: lon
-          in: query
-          description: A given longitude used to find the closest stream reach. Must be used together with `lat`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: return_format
-          in: query
-          description: The format of the time series response.
-          type: string
-          default: csv
-          enum:
-            - csv
-            - json
-      produces:
-        - text/csv
-        - application/json
-      responses:
-        '200':
-          description: The response body will contain a time series along with metadata about the stream reach of interest.
-        '400':
-          description: Bad request. Check request and paramaters.
-          examples:
-            error: An unexpected error occured.
-        '422':
-          description: Missing a required parameter.
-          examples:
-            error: region is required as input.
-  /DailyAverages:
-    get:
-      description: This operation returns the average flow for each day of the year for the Historic Simulation
-      summary: Return historic simulation's daily averages
-      parameters:
-        - name: lat
-          in: query
-          description: A given latitude used to find the closest stream reach. Must be used together with `lon`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: lon
-          in: query
-          description: A given longitude used to find the closest stream reach. Must be used together with `lat`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: return_format
-          in: query
-          description: The format of the time series response.
-          type: string
-          default: csv
-          enum:
-            - csv
-            - json
-      produces:
-        - text/csv
-        - application/json
-      responses:
-        '200':
-          description: The response body will contain a time series along with metadata about the stream reach of interest.
-        '400':
-          description: Bad request. Check request and paramaters.
-          examples:
-            error: An unexpected error occured.
-        '422':
-          description: Missing a required parameter.
-          examples:
-            error: region is required as input.
-  /MonthlyAverages:
-    get:
-      description: This operation returns the average flow for each month of the year for the Historic Simulation
-      summary: Return historic simulation's monthly averages
-      parameters:
-        - name: lat
-          in: query
-          description: A given latitude used to find the closest stream reach. Must be used together with `lon`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: lon
-          in: query
-          description: A given longitude used to find the closest stream reach. Must be used together with `lat`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: return_format
-          in: query
-          description: The format of the time series response.
-          type: string
-          default: csv
-          enum:
-            - csv
-            - json
-      produces:
-        - text/csv
-        - application/json
-      responses:
-        '200':
-          description: The response body will contain a time series along with metadata about the stream reach of interest.
-        '400':
-          description: Bad request. Check request and paramaters.
-          examples:
-            error: An unexpected error occured.
-        '422':
-          description: Missing a required parameter.
-          examples:
-            error: region is required as input.
-  /ReturnPeriods:
-    get:
-      description: |-
-        This operation returns the 2, 5, 10, 25, 50, and 100 year return period based on the 40-years simulated streamflow data and using the Gumbel Method. A successful response will return key-value pairs for earch return period along with metadata.
-      summary: Return historic simulation
-      parameters:
-        - name: lat
-          in: query
-          description: A given latitude used to find the closest stream reach. Must be used together with `lon`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: lon
-          in: query
-          description: A given longitude used to find the closest stream reach. Must be used together with `lat`. The spatial query uses the center point of the stream reach to determine proximity. This parameter can be given instead of providing `reach_id` in the path. A lat/lon spatial query will take longer than providing the reach_id. It is recommended that the reach_id be used instead once it is known.
-          type: number
-          format: float
-        - name: return_format
-          in: query
-          description: The format of the time series response.
-          type: string
-          default: csv
-          enum:
-            - csv
-            - json
-      produces:
-        - text/csv
-        - application/json
-      responses:
-        '200':
-          description: The response body will contain a key-value pairs for each return period along with metadata about the stream reach of interest.
         '400':
           description: Bad request. Check request and paramaters.
           examples:

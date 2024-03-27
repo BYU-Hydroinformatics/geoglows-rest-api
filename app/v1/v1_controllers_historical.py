@@ -6,10 +6,10 @@ import os
 import hydrostats.data as hd
 import pandas as pd
 import xarray
-from flask import jsonify, render_template, make_response
-from v1_functions import handle_parameters, get_units_title, get_historical_dataframe
+from flask import jsonify, make_response
 
-from constants import PATH_TO_ERA_5, PATH_TO_ERA_INTERIM, M3_TO_FT3
+from .constants import PATH_TO_ERA_5, PATH_TO_ERA_INTERIM, M3_TO_FT3
+from .v1_functions import handle_parameters, get_units_title, get_historical_dataframe
 
 __all__ = ['historical', 'historical_averages', 'return_periods']
 

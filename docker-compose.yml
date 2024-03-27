@@ -13,6 +13,6 @@ services:
       - 8090:80
     volumes:
 #      - MOUNT THE FLASK APP CODE
-      - ./GSP_API:/app/GSP_API
+      - ./app:/app
 #      - MOUNT THE DATA
       - ./sample_data:/mnt/output
